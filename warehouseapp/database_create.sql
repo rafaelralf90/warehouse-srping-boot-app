@@ -1,0 +1,2 @@
+DROP SCHEMA IF EXISTS warehouse;
+CREATE DATABASE warehouse;

@@ -1,0 +1,43 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="raffaeleesposito" id="component-table">
+        <createTable tableName="Component">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="productid" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="itemid" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="raffaeleesposito" id="addPrimaryKey-component">
+        <addPrimaryKey columnNames="id"
+                       constraintName="pk_id_component"
+                       tableName="Component"/>
+
+        <addAutoIncrement columnDataType="int"
+                          columnName="id"
+                          defaultOnNull="false"
+                          generationType="ALWAYS"
+                          incrementBy="1"
+                          startWith="1"
+                          tableName="Component"/>
+    </changeSet>
+    <changeSet author="raffaeleesposito-docs" id="add-unique-component">
+        <addUniqueConstraint
+                columnNames="productid, itemid"
+                constraintName="component-prductid-itemid-unique"
+                tableName="Component"
+        />
+    </changeSet>
+</databaseChangeLog>

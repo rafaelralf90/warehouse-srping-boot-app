@@ -1,0 +1,124 @@
+= WarehouseApp
+
+== Prerequisites
+
+- Maven 3.8.4 also available as Maven wrapper
+- Java  11
+
+Optional, if you want to use MySql:
+
+- Docker and Docker-compose
+
+Please make sure your ports *3306*, *8080* are not allocated.
+
+=== Build with unit and integration tests
+
+Build with UT and IT, in the project root folder run:
+....
+./mvnw clean install
+....
+....
+-DskipTests to skip UT and IT
+-DskipITs to skip IT
+....
+
+== Run instructions
+
+=== Run Project with h2
+
+Start application, in the project root folder run:
+....
+cd warehouseapp
+../mvnw spring-boot:run -P h2
+....
+
+H2 Console is available at http://localhost:8080/h2-console
+
+=== Run Project with MySql
+
+To start MySql, and setup the Mysql DB (remove schema if present and create a new empty one)
+in the project root folder run:
+....
+cd warehouseapp
+docker-compose up -d
+../mvnw initialize -P mysql
+....
+
+Start application, in the project root folder run:
+....
+cd warehouseapp
+../mvnw spring-boot:run -P mysql
+....
+
+The data contained in the files: `products.json` and `inventory.json` will be
+use to populate sample rows in the database at application startup.
+
+== API
+
+The web app implementing Warehouse Service API will be available at:
+- http://localhost:8080/api/products/
+- http://localhost:8080/api/items/
+
+=== Postman collections are available here:
+
+- project root folder/warehouseapp/postman-collection/Warehouse app.postman_collection.json
+
+=== cUrl
+
+List available products
+
+```
+curl --location --request GET 'http://localhost:8080/api/products/?onlyAvailable=false' \
+--header 'Content-Type: application/json' \
+--data-raw '';
+```
+
+Retrieve availability for a product
+
+```
+curl --location --request GET 'http://localhost:8080/api/products/Dinning Table' \
+--header 'Content-Type: application/json' \
+--data-raw '';
+```
+
+Product sale
+
+```
+curl --location --request POST 'http://localhost:8080/api/products/' \
+--header 'Content-Type: application/json' \
+--data-raw '  {
+"name": "Dining Chair",
+"quantity": 3
+}';
+```
+
+List items
+
+```
+curl --location --request GET 'http://localhost:8080/api/items/' \
+--header 'Content-Type: application/json' \
+--data-raw '';
+```
+
+Add item stock
+
+```
+curl --location --request PUT 'http://localhost:8080/api/items/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+        "name": "leg",
+        "stock": 12,
+        "art_id": 1
+}';
+```
+
+== Notes on implementation
+
+- *Project structure*: I used a multi module project structure for this application, even if
+there's only one module, in my experience the number of modules grows fast especially
+in the first phase of a new project, so I find convenient starting right away with this structure.
+    
+- *Coverage*: You can check the test coverage reports after building the projects without skipping UT and IT.
+You will find the reports under project root folder/warehouseapp/target/site/jacoco-merged-test-coverage-report/index.html
+
+- *Main frameworks and libraries used*: Spring boot, JPA (Hibernate), Liquibase, Lombok, MapStruct, Mockito, RestAssured.
